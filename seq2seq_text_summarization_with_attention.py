@@ -59,18 +59,18 @@ for epoch in range(EPOCHS):
     total_loss = 0
 
     for batch, (inp, targ) in enumerate(dataset):
-        print("Batch: " + str(batch))
-        print("Input: " + inp)
-        print("Output: " + targ)
-        print("****************************************")
+#        print("Batch: " + str(batch))
+#        print("Input: " + inp)
+#        print("Output: " + targ)
+#        print("****************************************")
         loss = 0
 
         with tf.GradientTape() as tape:
             enc_output, enc_hidden = encoder(inp, hidden)
-            print("enc_output:" + str(enc_output))
+#            print("enc_output:" + str(enc_output))
             dec_hidden = enc_hidden
             dec_input = tf.expand_dims([vocab.word2idx['<start>']] * BATCH_SIZE, 1)
-            print("dec_input:" + str(dec_input))
+#            print("dec_input:" + str(dec_input))
 
             for t in range(1, targ.shape[1]):
                 predictions, dec_hidden, attention_weights = decoder(dec_input, dec_hidden, enc_output)
