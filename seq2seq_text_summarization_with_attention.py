@@ -46,8 +46,8 @@ checkpoint = tf.train.Checkpoint(optimizer=optimiser,
                                  encoder=encoder,
                                  decoder=decoder)
 
-latest_ckp = tf.train.latest_checkpoint('./training_checkpoints')
-checkpoint.restore(latest_ckp)
+#latest_ckp = tf.train.latest_checkpoint('./training_checkpoints')
+#checkpoint.restore(latest_ckp)
 
 ## Training
 EPOCHS = 10
