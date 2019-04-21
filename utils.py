@@ -225,6 +225,7 @@ class Decoder(tf.keras.Model):
         self.batch_size = batch_size
         self.prediction_layer = tf.keras.layers.Dense(vocab_size)
         self.gru = gru(self.dec_units)
+
         # For attention
         self.W1 = tf.keras.layers.Dense(self.dec_units)
         self.W2 = tf.keras.layers.Dense(self.dec_units)
@@ -273,23 +274,25 @@ def loss_function(real, pred):
 
 
 # Evaluation
-def evaluate(article, vocab, encoder, decoder, max_length_article, max_length_summary):
+def evaluate(article, units, vocab, encoder, decoder, max_length_article, max_length_summary):
 
     attention_plot = np.zeros((max_length_summary, max_length_article))
     result = ''
 
     article_preprocessed = preprocess_article(article)
-    inp_text = [vocab.word2idx[word] for word in article_preprocessed.split()]
+    inp_text = [vocab.word2idx[word] if word in vocab.word2idx.keys() else 1
+                for word in article_preprocessed.split()]
     inputs = tf.keras.preprocessing.sequence.pad_sequences([inp_text],
                                                            maxlen=max_length_article,
                                                            padding='post')
     input_tensor = tf.convert_to_tensor(inputs)
-    enc_output, enc_hidden = encoder(input_tensor)
+    hidden = [tf.zeros((1, units))]
+    enc_output, enc_hidden = encoder(input_tensor, hidden)
 
     dec_hidden = enc_hidden
     dec_input = tf.expand_dims([vocab.word2idx['<start>']], 0)
 
-    for t in range(max_length_article):
+    for t in range(max_length_summary):
         predictions, dec_hidden, attention_weights = decoder(dec_input, dec_hidden, enc_output)
 
         # storing the attention weigths to plot later on
@@ -323,8 +326,8 @@ def plot_attention(attention, sentence, predicted_sentence):
     plt.show()
 
 
-def translate(sentence, encoder, decoder, max_length_inp, max_length_targ):
-    result, sentence, attention_plot = evaluate(sentence, encoder, decoder, max_length_inp,
+def summarize(sentence, units, vocab, encoder, decoder, max_length_inp, max_length_targ):
+    result, sentence, attention_plot = evaluate(sentence, units, vocab, encoder, decoder, max_length_inp,
                                                 max_length_targ)
 
     print('Input: {}'.format(sentence))
