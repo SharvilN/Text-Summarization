@@ -28,7 +28,7 @@ BUFFER_SIZE = len(training_articles_tensor)
 BATCH_SIZE = 64
 N_BATCH = BUFFER_SIZE // BATCH_SIZE
 embedding_dim = 256
-units = 512
+units = 1024
 vocab_size = len(vocab.word2idx)
 
 dataset = tf.data.Dataset.from_tensor_slices((training_articles_tensor, training_summaries_tensor)).shuffle(BUFFER_SIZE)
